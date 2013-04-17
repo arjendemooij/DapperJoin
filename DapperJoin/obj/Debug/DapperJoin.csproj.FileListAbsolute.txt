@@ -1,0 +1,5 @@
+D:\Code\DapperJoin\DapperJoin\bin\Debug\DapperJoin.dll
+D:\Code\DapperJoin\DapperJoin\bin\Debug\DapperJoin.pdb
+D:\Code\DapperJoin\DapperJoin\obj\Debug\DapperJoin.csprojResolveAssemblyReference.cache
+D:\Code\DapperJoin\DapperJoin\obj\Debug\DapperJoin.dll
+D:\Code\DapperJoin\DapperJoin\obj\Debug\DapperJoin.pdb

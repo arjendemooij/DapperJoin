@@ -1,0 +1,8 @@
+D:\Code\DapperJoin\TestDapperJoin\bin\Debug\TestDapperJoin.exe.config
+D:\Code\DapperJoin\TestDapperJoin\obj\Debug\TestDapperJoin.csprojResolveAssemblyReference.cache
+D:\Code\DapperJoin\TestDapperJoin\bin\Debug\TestDapperJoin.exe
+D:\Code\DapperJoin\TestDapperJoin\bin\Debug\TestDapperJoin.pdb
+D:\Code\DapperJoin\TestDapperJoin\obj\Debug\TestDapperJoin.exe
+D:\Code\DapperJoin\TestDapperJoin\obj\Debug\TestDapperJoin.pdb
+D:\Code\DapperJoin\TestDapperJoin\bin\Debug\DapperJoin.dll
+D:\Code\DapperJoin\TestDapperJoin\bin\Debug\DapperJoin.pdb
