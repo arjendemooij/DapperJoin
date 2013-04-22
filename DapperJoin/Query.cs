@@ -4,107 +4,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-// Assumption: join of same tables
-// many to many
-// one to one
-
 namespace DapperJoin
 {
 
-    internal class GenericJoin<TParent, TChild> : Join
-    {
-
-        public GenericJoin()
-        {
-            ParentType = typeof(TParent);
-            ChildType = typeof(TChild);
-        }
-    }
-
-    internal class Join
-    {
-        public Type ParentType { get; protected set; }
-        public Type ChildType { get; protected set; }
-
-        public bool IsParent(Type ItemType)
-        {
-            return ParentType == ItemType;
-        }
-    }
-
-    public class JoinRegistry
-    {
-        private static List<Join> Joins { get; set; }
-
-        public static void Add<TParent, TChild>()
-        {
-            if(Joins == null)Joins = new List<Join>();
-
-            Joins.Add(new GenericJoin<TParent, TChild>());
-        }
-
-        internal static Join Find(Type T1, Type T2)
-        {
-            if (Joins == null) Joins = new List<Join>();
-
-            return Joins.Single(x=>(x.ParentType == T1 && x.ChildType == T2) || (x.ParentType == T2 && x.ChildType == T1));
-        }
-    }
-
-    internal class SubQuery
-    {
-        public SubQuery(Type itemType, Join join, SubQuery joinedTo)
-        {
-            ItemType = itemType;
-            Join = join;
-            TableName = itemType.Name;
-            TableAlias = itemType.Name.ToLower();
-            JoinedTo = joinedTo;
-        }
-
-        public Type ItemType { get; set; }
-        public string TableName { get; set; }
-        public string TableAlias { get; set; }
-        public Join Join { get; set; }
-        public SubQuery JoinedTo { get; set; }
-
-        public SubQuery GetParentQuery()
-        {
-            if (Join.ParentType == ItemType)
-                return this;
-            else
-                return JoinedTo;
-        }
-
-        public SubQuery GetChildQuery()
-        {
-            if (Join.ChildType == ItemType)
-                return this;
-            else
-                return JoinedTo;
-        }
-
-    }
-
-    public class GenericQuery<TModel>
+    public class Query<TModel>
     {
 
         private List<SubQuery> SubQueries { get; set; }
 
-        public GenericQuery()
+        public Query()
         {
             SubQueries = new List<SubQuery>();
             SubQueries.Add(new SubQuery(
-                typeof(TModel), null, null
-                ));
+                typeof(TModel), null, null, null, null));
         }
 
-        public GenericQuery<TModel> Join<TFrom, TTo>()
+        public Query<TModel> Join<TFrom, TTo>()
         {
-            SubQuery joinTo = SubQueries.Last(x => x.ItemType == typeof(TFrom));
-            Join join = JoinRegistry.Find(joinTo.ItemType, typeof(TTo));
+            SubQuery joinTo = SubQueries.Last(x => x.Table.ItemType == typeof(TFrom));
+            IRelation join = RelationRegistry.Find(joinTo.Table.ItemType, typeof(TTo));
 
-            SubQueries.Add(new SubQuery(typeof(TTo), join, joinTo));
+            SubQueries.Add(new SubQuery(typeof(TTo), join, joinTo, null, null));
 
             return this;
         }
@@ -120,31 +40,33 @@ namespace DapperJoin
             selectBuilder.Remove(selectBuilder.Length - 1, 1);
 
             StringBuilder fromBuilder = new StringBuilder();
-            string joinFormat = "\nINNER JOIN {0} {1} ON {2}.{3} = {4}.{5}";
+            string joinFormat = "\n{0} {1} {2} ON {3}.{4} = {5}.{6}";
             string fromFormat = "\nFROM {0} {1}";
 
             foreach (SubQuery subQuery in SubQueries)
             {
-                if (subQuery.Join == null)
+                if (subQuery.Relation == null)
                 {
                     fromBuilder.Append(
-                        string.Format(fromFormat, subQuery.TableName, subQuery.TableAlias)
+                        string.Format(fromFormat, subQuery.Table.TableName, subQuery.TableAlias)
                         );
                 }
                 else
                 {
                     fromBuilder.Append(
-                        string.Format(joinFormat,
-                            subQuery.TableName
+                        string.Format(
+                            joinFormat
+                            , subQuery.Relation.ChildRequired ? "INNER JOIN" : "LEFT OUTER JOIN" 
+                            , subQuery.Table.TableName
                             , subQuery.TableAlias
                             , subQuery.GetParentQuery().TableAlias
-                            , "Id"
+                            , subQuery.Relation.ParentFieldName
                             , subQuery.GetChildQuery().TableAlias
-                            , subQuery.GetParentQuery().TableName + "Id"
+                            , subQuery.Relation.ChildFieldName
                         )
                    );
                 }
-            } 
+            }
 
             return string.Format("SELECT {0} {1}", selectBuilder, fromBuilder);
         }

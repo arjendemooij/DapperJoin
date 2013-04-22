@@ -11,17 +11,14 @@ namespace TestDapperJoin
     {
         static void Main(string[] args)
         {
-            JoinRegistry.Add<Category, Product>();
-            JoinRegistry.Add<Product, LocalProduct>();
-            JoinRegistry.Add<Product, ProductOption>();
-            JoinRegistry.Add<ProductOption, ProductOptionValue>();
+            RelationRegistry.Add<Category, Product>();
+            RelationRegistry.Add<Product, ProductLocal>();
+            RelationRegistry.Add<Product, ProductOption>();
+            RelationRegistry.Add<ProductOption, ProductOptionValue>();
+            RelationRegistry.Add<ProductLocal, ProductLocal>();
 
-            var query = new GenericQuery<Product>().Join<Product, Category>().Join<Product, LocalProduct>();
+            var query = new Query<ProductLocal>().Join<ProductLocal, ProductLocal>();
             Console.Out.Write(query.ToSql());
-
-            var query2 = new GenericQuery<Product>().Join<Product, ProductOption>().Join<ProductOption, ProductOptionValue>();
-            Console.Out.Write(query2.ToSql());
-
         }
     }
 }

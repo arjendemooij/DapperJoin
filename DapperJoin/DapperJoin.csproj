@@ -39,8 +39,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Cardinality.cs" />
+    <Compile Include="ParentChildRelation.cs" />
     <Compile Include="Query.cs" />
+    <Compile Include="IRelation.cs" />
+    <Compile Include="RelationRegistry.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SelfRelation.cs" />
+    <Compile Include="SubQuery.cs" />
+    <Compile Include="Table.cs" />
+    <Compile Include="TableAliasRegistry.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

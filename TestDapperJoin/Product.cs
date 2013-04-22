@@ -14,7 +14,7 @@ namespace TestDapperJoin
         public int CategoryId { get; set; }
 
         public Category Category { get; set; }
-        public IEnumerable<LocalProduct> LocalProduct { get; set; }
+        public IEnumerable<ProductLocal> LocalProduct { get; set; }
         public IEnumerable<ProductProperty> ProductProperties { get; set; }
         public IEnumerable<ProductOption> ProductOptions { get; set; }
     }
